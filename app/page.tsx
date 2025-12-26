@@ -1,65 +1,134 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Background } from "@/components/Background";
+import { Quiz } from "@/components/Quiz";
+import { MaxiCard } from "@/components/MaxiCard";
+import { Zap, Heart } from "lucide-react";
+
+type AppState = "intro" | "quiz" | "result";
 
 export default function Home() {
+  const [state, setState] = useState<AppState>("intro");
+  const [name, setName] = useState("");
+  const [score, setScore] = useState(0);
+
+  const startQuiz = () => {
+    if (!name.trim()) return;
+    setState("quiz");
+  };
+
+  const handleQuizComplete = (finalScore: number) => {
+    setScore(finalScore);
+    setState("result");
+  };
+
+  const reset = () => {
+    setState("intro");
+    setScore(0);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen flex flex-col items-center justify-center py-12 px-4 relative">
+      <Background />
+      
+      <div className="z-10 w-full max-w-4xl flex flex-col items-center">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border-white/20 mb-6"
+          >
+            <Zap className="w-4 h-4 text-accent fill-accent" />
+            <span className="text-xs font-bold uppercase tracking-widest text-white/80">EthMumbai 2024 Edition</span>
+          </motion.div>
+          
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4 text-white uppercase italic">
+            Maxi <span className="text-accent">Checker</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-white/50 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">
+            Are you a true Ethereum enthusiast? Take the quiz and flex your Maxi score.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+
+        <AnimatePresence mode="wait">
+          {state === "intro" && (
+            <motion.div
+              key="intro"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              className="glass rounded-3xl p-8 md:p-12 w-full max-w-md border-white/10"
+            >
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-widest text-white/40 mb-2 ml-1">
+                    Your Hacker Name / Handle
+                  </label>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. vitalik.eth"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:outline-none focus:border-accent transition-all placeholder:text-white/20"
+                    onKeyDown={(e) => e.key === "Enter" && startQuiz()}
+                  />
+                </div>
+                
+                <button
+                  onClick={startQuiz}
+                  disabled={!name.trim()}
+                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
+                    name.trim()
+                      ? "maxi-gradient text-white shadow-lg shadow-accent/25 hover:scale-[1.02] active:scale-[0.98]"
+                      : "bg-white/5 text-white/20 cursor-not-allowed"
+                  }`}
+                >
+                  Start The Quiz
+                </button>
+                
+                <p className="text-center text-white/30 text-xs font-medium italic">
+                  7 questions • Takes less than 60s
+                </p>
+              </div>
+            </motion.div>
+          )}
+
+          {state === "quiz" && (
+            <motion.div
+              key="quiz"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              className="w-full"
+            >
+              <Quiz onComplete={handleQuizComplete} />
+            </motion.div>
+          )}
+
+          {state === "result" && (
+            <motion.div
+              key="result"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full"
+            >
+              <MaxiCard name={name} score={score} onReset={reset} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Footer */}
+        <footer className="mt-20 flex flex-col items-center gap-4 opacity-40">
+          <div className="flex items-center gap-2 text-sm font-medium">
+            <span>Made with</span>
+            <Heart className="w-4 h-4 text-accent fill-accent" />
+            <span>for ETHMumbai</span>
+          </div>
+        </footer>
+      </div>
+    </main>
   );
 }
