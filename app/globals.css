@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #050505;
+  --background: #1a0505;
   --foreground: #ffffff;
-  --accent: #ff0055;
-  --accent-secondary: #7000ff;
+  --accent: #ff0044;
+  --accent-secondary: #ff4400;
 }
 
 @theme inline {
@@ -28,12 +28,13 @@ body {
 }
 
 .maxi-gradient {
-  background: linear-gradient(135deg, #ff0055 0%, #7000ff 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #ff0055 0%, #7000ff 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

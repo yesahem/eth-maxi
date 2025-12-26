@@ -2,52 +2,108 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ArrowRight } from "lucide-react";
+import { Check, ArrowRight, Brain, Terminal } from "lucide-react";
 
 const QUESTIONS = [
   {
     id: 1,
-    question: "In which city is ETHMumbai typically held?",
-    options: ["Mumbai", "London", "Paris", "New York"],
-    correct: 0,
+    question: "What programming language is most commonly used for Ethereum smart contracts?",
+    options: ["Rust", "Solidity", "Go", "Python"],
+    correct: 1,
   },
   {
     id: 2,
-    question: "Ethereum moved to Proof of Stake in an event called?",
-    options: ["The Merge", "The Burn", "The Flip", "The Surge"],
-    correct: 0,
+    question: "Which client-side wallet is most commonly used to interact with Ethereum dApps?",
+    options: ["Trust Wallet", "MetaMask", "Ledger Live", "Coinbase App"],
+    correct: 1,
   },
   {
     id: 3,
-    question: "What is the primary coding language for Ethereum smart contracts?",
-    options: ["Solidity", "Python", "Java", "Rust"],
-    correct: 0,
+    question: "Which hackathon helped popularize 1inch through early DeFi innovation?",
+    options: ["ETHParis", "ETHGlobal New York", "ETHBerlin", "ETHLondon"],
+    correct: 1,
   },
   {
     id: 4,
-    question: "Which of these is NOT an Ethereum Layer 2?",
-    options: ["Arbitrum", "Optimism", "Base", "Bitcoin"],
-    correct: 3,
+    question: "ETHGlobal hackathons are best known for what?",
+    options: [
+      "Long-term accelerators",
+      "Rapid global hackathons",
+      "Only Layer 2 projects",
+      "Trading competitions",
+    ],
+    correct: 1,
   },
   {
     id: 5,
-    question: "What is the current logo shape of Ethereum?",
-    options: ["Square", "Circle", "Octahedron", "Triangle"],
-    correct: 2,
+    question: "Which of these companies is known to actively sponsor and recruit at ETH hackathons?",
+    options: ["Netflix", "1inch", "Uber", "Spotify"],
+    correct: 1,
   },
   {
     id: 6,
-    question: "ETHMumbai is a community-led hackathon in which country?",
-    options: ["India", "USA", "China", "Brazil"],
-    correct: 0,
+    question: "What usually happens to strong hackathon projects after ETH events?",
+    options: [
+      "They disappear",
+      "They pivot into startups",
+      "They become memecoins",
+      "They stay as demos forever",
+    ],
+    correct: 1,
   },
   {
     id: 7,
-    question: "What do you call a full-blown Ethereum enthusiast?",
-    options: ["Maxi", "Banker", "Noob", "Miner"],
-    correct: 0,
+    question: "ETHMumbai is part of which global hackathon ecosystem?",
+    options: ["HackMIT", "ETHGlobal-style events", "Google DevFest", "Y Combinator"],
+    correct: 1,
+  },
+  {
+    id: 8,
+    question: "Which DeFi category did many early ETH hackathon projects focus on?",
+    options: ["NFT Gaming", "DEX Aggregation", "Social Media", "AI Chatbots"],
+    correct: 1,
+  },
+  {
+    id: 9,
+    question: "Why do protocols like Polygon and Arbitrum attend ETH hackathons?",
+    options: [
+      "Marketing only",
+      "To onboard real builders",
+      "To sell tokens",
+      "For legal compliance",
+    ],
+    correct: 1,
+  },
+  {
+    id: 10,
+    question: "Which ETH event is globally known for back-to-back hackathons across continents?",
+    options: ["ETHDenver", "ETHIndia", "ETHGlobal", "Devcon"],
+    correct: 2,
+  },
+  {
+    id: 11,
+    question: "What is Devcon primarily focused on?",
+    options: [
+      "Trading workshops",
+      "Ethereum core research & ecosystem",
+      "Startup demo days",
+      "Only hackathons",
+    ],
+    correct: 1,
+  },
+  {
+    id: 12,
+    question: "What separates ETH hackathons from traditional startup events?",
+    options: [
+      "No judges",
+      "Code-first, ideas second",
+      "Only pitch decks",
+      "No real users",
+    ],
+    correct: 1,
   },
 ];
+
 
 interface QuizProps {
   onComplete: (score: number) => void;
@@ -80,12 +136,20 @@ export const Quiz = ({ onComplete }: QuizProps) => {
 
   return (
     <div className="w-full max-w-xl mx-auto px-4">
-      {/* Progress Bar */}
-      <div className="w-full h-1.5 bg-white/5 rounded-full mb-8 overflow-hidden">
+      {/* Progress & AI Status */}
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Quiz Mastery</span>
+        <div className="flex items-center gap-1.5 glass px-2 py-0.5 rounded-full border-white/5">
+            <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="text-[8px] font-bold text-accent uppercase tracking-tighter">AI Scraper Active</span>
+        </div>
+      </div>
+      
+      <div className="w-full h-1 bg-white/5 rounded-full mb-8 overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
-          className="h-full maxi-gradient"
+          className="h-full maxi-gradient shadow-[0_0_10px_rgba(255,0,85,0.5)]"
         />
       </div>
 
@@ -95,37 +159,43 @@ export const Quiz = ({ onComplete }: QuizProps) => {
           initial={{ x: 20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -20, opacity: 0 }}
-          className="glass rounded-3xl p-6 md:p-10"
+          className="glass rounded-3xl p-6 md:p-10 border-white/5 relative overflow-hidden"
         >
-          <div className="mb-8">
-            <span className="text-accent text-sm font-mono tracking-widest uppercase">
-              Question {currentStep + 1} of {QUESTIONS.length}
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold mt-2">
+          {/* Decorative background brain */}
+          <Brain className="absolute -bottom-10 -right-10 w-40 h-40 text-white/5 rotate-12" />
+
+          <div className="mb-8 relative z-10">
+            <div className="flex items-center gap-2 mb-2">
+                 <Terminal className="w-3.5 h-3.5 text-accent" />
+                 <span className="text-accent text-[10px] font-black tracking-widest uppercase">
+                    Checkpoint {currentStep + 1}/7
+                </span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-white leading-tight italic">
               {QUESTIONS[currentStep].question}
             </h2>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2 relative z-10">
             {QUESTIONS[currentStep].options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedOption(index)}
-                className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-center justify-between group ${
+                className={`w-full text-left p-4 rounded-2xl border transition-all duration-200 flex items-center justify-between group ${
                   selectedOption === index
-                    ? "bg-accent/10 border-accent text-accent"
-                    : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:border-white/20"
+                    ? "bg-accent/10 border-accent text-accent translate-x-1"
+                    : "bg-white/5 border-white/5 text-white/60 hover:bg-white/10 hover:border-white/10"
                 }`}
               >
-                <span className="text-lg">{option}</span>
+                <span className="text-base font-bold uppercase tracking-tight">{option}</span>
                 <div
-                  className={`w-6 h-6 rounded-full border flex items-center justify-center transition-colors ${
+                  className={`w-5 h-5 rounded-lg border flex items-center justify-center transition-colors ${
                     selectedOption === index
                       ? "bg-accent border-accent"
                       : "border-white/20 group-hover:border-white/40"
                   }`}
                 >
-                  {selectedOption === index && <Check className="w-4 h-4 text-white" />}
+                  {selectedOption === index && <Check className="w-3 h-3 text-white" />}
                 </div>
               </button>
             ))}
@@ -134,13 +204,13 @@ export const Quiz = ({ onComplete }: QuizProps) => {
           <button
             onClick={handleNext}
             disabled={selectedOption === null}
-            className={`w-full mt-10 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+            className={`w-full mt-10 py-4 rounded-2xl font-black uppercase italic tracking-tighter flex items-center justify-center gap-2 transition-all ${
               selectedOption !== null
-                ? "maxi-gradient text-white shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-[0.98]"
-                : "bg-white/5 text-white/20 cursor-not-allowed"
+                ? "maxi-gradient text-white shadow-xl shadow-accent/20 hover:scale-[1.02] active:scale-[0.98]"
+                : "bg-white/5 text-white/10 cursor-not-allowed"
             }`}
           >
-            {currentStep === QUESTIONS.length - 1 ? "Get Results" : "Next Question"}
+            {currentStep === QUESTIONS.length - 1 ? "Submit to AI" : "Next Protocol"}
             <ArrowRight className="w-5 h-5" />
           </button>
         </motion.div>
